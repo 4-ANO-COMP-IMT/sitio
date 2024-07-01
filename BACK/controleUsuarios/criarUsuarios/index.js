@@ -3,7 +3,11 @@ const express = require ('express');
 const axios = require('axios');
 const bodyParser = require('body-parser');
 const app = express();
+const cors = require('cors');
+
+
 app.use(bodyParser.json());
+app.use(cors());
 contador = 0;
 
 
