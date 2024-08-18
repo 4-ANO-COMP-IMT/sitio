@@ -62,4 +62,4 @@ app.post("/eventos", (req, res) => {
 
 });
 
-app.listen(6000, () => console.log("Consultas. Porta 6000"))
+app.listen(6001, () => console.log("Consultas. Porta 6001"))
