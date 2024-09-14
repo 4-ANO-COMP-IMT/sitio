@@ -1,9 +1,9 @@
-import RegistroUsuario from './RegistroUsuario';
+import Home from './registro/Home';
 
 function App() {
   return (
     <div className="App">
-      <RegistroUsuario />
+      <Home />
     </div>
   );
 }

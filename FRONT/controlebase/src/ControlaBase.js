@@ -34,10 +34,10 @@ const ControlaBase = () => {
                 )}
                 {!clicked && (Object.keys(jsonObject).map((key) => (
                     <div className='userInfo' key={key}>
-                        <p>ID: {JSON.stringify(jsonObject[key]['id'])}</p>
                         <p>Nome: {JSON.stringify(jsonObject[key]['nome'])}</p>
                         <p>Email: {JSON.stringify(jsonObject[key]['email'])}</p>
-                        <p>Senha: {JSON.stringify(jsonObject[key]['senha'])}</p>
+                        <p>Celular: {JSON.stringify(jsonObject[key]['celular'])}</p>
+                        <p>horario: {JSON.stringify(jsonObject[key]['horario'])}</p>
                     </div>
                 )))}
                 {!clicked && (

@@ -11,18 +11,7 @@ app.use(cors());
 
 let baseConsulta = {}
 
-// function cloneBaseUsuarios() {
-//     let baseConsulta = {}
-//     try {
-//         const data = fs.readFileSync(filePath, 'utf8');
-//         baseConsulta = JSON.parse(data);
-//         return baseConsulta
-//     } catch (error) {
-//         console.error('Erro ao carregar dados do arquivo:', error.message);
-//         return {}
-//     }
-// }
-function atualizarBaseUsuarios() {
+function atualizarBaseReserva() {
     try {
         // Replace existing data with the contents of baseConsulta
         fs.writeFileSync(filePath, JSON.stringify(baseConsulta, null, 2));
@@ -32,15 +21,15 @@ function atualizarBaseUsuarios() {
     }
 }
 
-const filePath = path.join(__dirname, '..', 'baseUsuarios.json'); // Caminho para o arquivo
+const filePath = path.join(__dirname, '..', 'baseReservas.json'); // Caminho para o arquivo
 
 
 const funcoes = {
 
-    UsuarioCriado: (dataUsuario) => {
-        // let baseConsulta = cloneBaseUsuarios()
+    ReservaCriada: (dataUsuario) => {
+        // let baseConsulta = clonebaseReservas()
         baseConsulta[Object.keys(baseConsulta).length] = dataUsuario;
-        atualizarBaseUsuarios()
+        atualizarBaseReserva()
     },
     ObservacaoCriada: (observacao) => {
         const observacoes = baseConsulta[observacao.lembreteId]["observacoes"] || [];

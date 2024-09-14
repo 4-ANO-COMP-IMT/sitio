@@ -14,38 +14,38 @@ contador = 0;
 let baseLocal = {};
 
 
-app.get('/criarUsuarios', (req,res) => {
+app.get('/criarReservas', (req,res) => {
     res.send(baseLocal)
 });
 
-app.put("/criarUsuarios", async (req, res) => {
+app.put("/criarReservas", async (req, res) => {
     // const baseLocal = {}
 
     contador ++;
-    const { id } = req.body;
+    const { celular } = req.body;
     const { nome } = req.body;
     const { email } = req.body;
-    const { senha } = req.body;
+    const { horario } = req.body;
 
 
     //save local
     baseLocal[contador] = {
-        id,
+        celular,
         nome,
         email,
-        senha
+        horario
     };
 
     
     //POST mudanca na base de usuarios
     //==========================================================
     await axios.post("http://localhost:10000/eventos", {
-        tipo: "UsuarioCriado",
+        tipo: "ReservaCriada",
         dados: {
-            id,
+            celular,
             nome,
             email,
-            senha
+            horario
         },
     });
     //==========================================================
@@ -59,5 +59,5 @@ app.put("/criarUsuarios", async (req, res) => {
 // })
 
 app.listen(4000, () => {
-    console.log('atualizarBaseUsuarios. Porta 4000')
+    console.log('atualizarBaseReserva. Porta 4000')
 })
