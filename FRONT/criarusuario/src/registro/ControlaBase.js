@@ -14,10 +14,10 @@ const ControlaBase = () => {
         }
     };
 
-    // Atualização automática a cada 5 segundos (5000ms)
+    
     useEffect(() => {
-        handleSearch(); // Faz a busca inicial
-        const interval = setInterval(handleSearch, 5000); // Atualiza os dados a cada 5 segundos
+        handleSearch(); 
+        const interval = setInterval(handleSearch, 5000); 
 
         
         return () => clearInterval(interval);

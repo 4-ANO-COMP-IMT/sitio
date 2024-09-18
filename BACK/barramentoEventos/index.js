@@ -15,9 +15,9 @@ function sleep(ms) {
 app.post('/eventos', async (req,res) => {
     const evento = req.body;
 
-    // await sleep(5000);
+    
 
-    // axios.post('http://localhost:4000/eventos', evento);
+    
     axios.post('http://localhost:6001/eventos', evento);
 
 

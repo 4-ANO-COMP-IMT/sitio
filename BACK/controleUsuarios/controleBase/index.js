@@ -13,7 +13,7 @@ let baseConsulta = {}
 
 function atualizarBaseReserva() {
     try {
-        // Replace existing data with the contents of baseConsulta
+        
         fs.writeFileSync(filePath, JSON.stringify(baseConsulta, null, 2));
         console.log('Dados atualizados e salvos com sucesso!');
     } catch (error) {
@@ -21,13 +21,13 @@ function atualizarBaseReserva() {
     }
 }
 
-const filePath = path.join(__dirname, '..', 'baseReservas.json'); // Caminho para o arquivo
+const filePath = path.join(__dirname, '..', 'baseReservas.json'); 
 
 
 const funcoes = {
 
     ReservaCriada: (dataUsuario) => {
-        // let baseConsulta = clonebaseReservas()
+        
         baseConsulta[Object.keys(baseConsulta).length] = dataUsuario;
         atualizarBaseReserva()
     },
