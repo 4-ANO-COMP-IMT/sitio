@@ -1,0 +1,91 @@
+Para criar o ambiente Flutter
+1
+
+> flutter create upodz_web_app
+==============================
+2
+
+> flutter config --enable-web
+==============================
+3
+
+> flutter devices
+==============================
+4 
+
+> cd my_first_web_app
+==============================
+5
+
+Modify the lib/main.dart File
+In your code editor, open the lib/main.dart file. Replace its contents with the following code:
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Web Counter',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: CounterPage(),
+    );
+  }
+}
+
+class CounterPage extends StatefulWidget {
+  @override
+  _CounterPageState createState() => _CounterPageState();
+}
+
+class _CounterPageState extends State<CounterPage> {
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Counter Web App'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'You have pushed the button this many times:',
+            ),
+            Text(
+              '$_counter',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _incrementCounter,
+              child: Text('Increment Counter'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+==============================
+6
+
+> flutter run -d chrome
+==============================
+
+==============================
