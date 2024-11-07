@@ -22,7 +22,6 @@ app.put("/criarReserva", async (req, res) => {
         capsula,
         data,
         horario,
-
     };
 
     // Evento de criação de usuário para um barramento de eventos
