@@ -14,7 +14,7 @@ app.post('/eventos', async (req, res) => {
         // Determina o tipo de evento e envia para endpoints específicos
         switch (evento.tipo) {
             case 'UsuarioCriado':
-                await axios.post('http://localhost:4000/eventos', evento); // Serviço de usuários
+                await axios.post('http://localhost:6001/eventos', evento); // Serviço de usuários
                 break;
 
             // case 'PedidoRealizado':
