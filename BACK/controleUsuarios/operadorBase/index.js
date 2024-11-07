@@ -31,11 +31,16 @@ const funcoes = {
         baseConsulta[Object.keys(baseConsulta).length] = dataUsuario;
         atualizarBaseReserva()
     },
-    ObservacaoCriada: (observacao) => {
-        const observacoes = baseConsulta[observacao.lembreteId]["observacoes"] || [];
-        observacoes.push(observacao);
-        baseConsulta[observacao.lembreteId]["observacoes"] = observacoes;
-    }
+    SolicitacaoLogin: (dataUsuario) => {
+        // let baseConsulta = clonebaseReservas()
+        baseConsulta[Object.keys(baseConsulta).length] = dataUsuario;
+        atualizarBaseReserva()
+    },
+    // ObservacaoCriada: (observacao) => {
+    //     const observacoes = baseConsulta[observacao.lembreteId]["observacoes"] || [];
+    //     observacoes.push(observacao);
+    //     baseConsulta[observacao.lembreteId]["observacoes"] = observacoes;
+    // }
     
 }
 

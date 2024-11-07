@@ -13,51 +13,42 @@ contador = 0;
 
 let baseLocal = {};
 
+// Endpoint para criar usuário
+app.put("/SolicitacaoLogin", async (req, res) => {
+    contador++;
+    const {email, senha } = req.body;
 
-app.get('/criarReservas', (req,res) => {
-    res.send(baseLocal)
-});
-
-app.put("/criarReservas", async (req, res) => {
-    // const baseLocal = {}
-
-    contador ++;
-    const { celular } = req.body;
-    const { nome } = req.body;
-    const { email } = req.body;
-    const { horario } = req.body;
-
-
-    //save local
+    // Salva os dados localmente
     baseLocal[contador] = {
-        celular,
-        nome,
         email,
-        horario
+        senha
     };
 
-    
-    //POST mudanca na base de usuarios
-    //==========================================================
-    await axios.post("http://localhost:10000/eventos", {
-        tipo: "ReservaCriada",
+    // Evento de criação de usuário para um barramento de eventos
+    const evento = {
+        tipo: "SolicitacaoLogin",
         dados: {
-            celular,
-            nome,
-            email,
-            horario
-        },
-    });
-    //==========================================================
+            email: email,
+            senha: senha
+        }
+    };
 
-    res.status(201).send(baseLocal[contador]);
-})
+    // ++ Tratativa para erros no envio do barramento
+    try {
+        // Envia o evento para o barramento (caso o barramento esteja ativo)
+        await axios.post('http://localhost:10000/eventos', evento);
+        res.status(201).send({ msg: "Solicitação de Login.", usuario: baseLocal[contador] });
+    } catch (error) {
+        console.error("Erro ao enviar Solicitação de Login para o barramento:", error);
+        res.status(500).send({ msg: "Erro ao enviar Solicitação de Login para o barramento" });
+    }
+});
 
 // app.post("/eventos", (req,res) => {
 //     console.log(req.body);
 //     res.status(200).send({msg:"ok"});
 // })
 
-app.listen(4000, () => {
-    console.log('atualizarBaseReserva. Porta 4000')
+app.listen(5000, () => {
+    console.log('Microserviço de criação de usuários, porta 5000.')
 })

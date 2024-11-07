@@ -37,16 +37,16 @@ app.put("/criarUsuario", async (req, res) => {
     };
 
     // ++ Tratativa para erros no envio do barramento
-    // try {
+    try {
         // Envia o evento para o barramento (caso o barramento esteja ativo)
         await axios.post('http://localhost:10000/eventos', evento);
         res.status(201).send({ msg: "Usuário criado e evento enviado ao barramento", usuario: baseLocal[contador] });
-    // } catch (error) {
-    //     console.error("Erro ao enviar evento para o barramento:", error);
-    //     res.status(500).send({ msg: "Erro ao enviar evento para o barramento" });
-    // }
+    } catch (error) {
+        console.error("Erro ao enviar evento para o barramento:", error);
+        res.status(500).send({ msg: "Erro ao enviar evento para o barramento" });
+    }
 });
 
 app.listen(4000, () => {
-    console.log('Servidor de criação de usuários rodando na porta 4000');
+    console.log('Microserviço de criação de usuários, porta 4000.');
 });

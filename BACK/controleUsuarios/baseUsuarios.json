@@ -5,5 +5,19 @@
     "celular": "666",
     "email": "@zap",
     "senha": "0000"
+  },
+  "1": {
+    "id": 2,
+    "nome": "Mauro111",
+    "celular": "666",
+    "email": "@zap",
+    "senha": "0000"
+  },
+  "2": {
+    "id": 3,
+    "nome": "8888",
+    "celular": "666",
+    "email": "@zap",
+    "senha": "0000"
   }
 }
