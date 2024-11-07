@@ -78,4 +78,4 @@ app.post("/eventos", (req, res) => {
 // Carrega os usuários do arquivo JSON ao iniciar o servidor
 carregarBaseReservas();
 
-app.listen(6001, () => console.log("Consultas Reservas. Porta 7001"));
+app.listen(7001, () => console.log("Consultas Reservas. Porta 7001"));

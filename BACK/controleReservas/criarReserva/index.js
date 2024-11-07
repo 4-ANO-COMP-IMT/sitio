@@ -48,6 +48,24 @@ app.put("/criarReserva", async (req, res) => {
     }
 });
 
-app.listen(4000, () => {
+app.listen(7000, () => {
     console.log('Microserviço de criação de reservas, porta 7000.');
 });
+
+
+
+// // Trecho de codigo para usar no front
+
+// final url = Uri.parse('http://localhost:7000/criarReserva'); // Endpoint do backend
+
+// try {
+//   final response = await http.put(
+//     url,
+//     headers: {'Content-Type': 'application/json'},
+//     body: jsonEncode({
+//       "email": "zezinho",
+//       "capsula": "1",
+//       "data": "12/12/24",
+//       "horario": "12:30",
+//     }),
+//   );
