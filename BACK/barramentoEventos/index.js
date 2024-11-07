@@ -21,6 +21,10 @@ app.post('/eventos', async (req, res) => {
                 await axios.post('http://localhost:6001/eventos', evento); // Serviço de pedidos
                 break;
 
+            case 'ReservaCriada':
+                await axios.post('http://localhost:7001/eventos', evento); // Serviço de pedidos
+                break;
+
             // case 'PagamentoProcessado':
             //     await axios.post('http://localhost:6001/eventos', evento); // Serviço de pagamentos
             //     break;

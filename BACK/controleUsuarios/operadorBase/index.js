@@ -39,7 +39,6 @@ const funcoes = {
     },
 
     SolicitacaoLogin: (dataUsuario) => {
-        console.log("wazaaa")
         const { email, senha } = dataUsuario;
         console.log(`Original: ${email}, ${senha}`);
         const usuario = Object.values(baseConsulta).find((u) => {
