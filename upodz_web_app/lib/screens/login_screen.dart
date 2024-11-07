@@ -31,6 +31,20 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Por favor, insira seu login';
+    }
+
+    // Expressão regular para validar formato de e-mail
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    if (!emailRegex.hasMatch(value)) {
+      return 'Por favor, insira um e-mail válido';
+    }
+
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,12 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderSide: BorderSide(color: Color(0xFF033F58)),
                     ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira seu login';
-                    }
-                    return null;
-                  },
+                  validator: _validateEmail,
                 ),
                 const SizedBox(height: 16.0),
                 TextFormField(
@@ -129,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     icon: const Icon(Icons.person_add, color: Color(0xFF033F58)),
                     label: const Text(
-                      'Ir para Cadastro',
+                      'Se cadastrar',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
