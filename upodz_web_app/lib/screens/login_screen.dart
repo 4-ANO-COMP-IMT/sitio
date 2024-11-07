@@ -4,6 +4,7 @@ class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _LoginScreenState createState() => _LoginScreenState();
 }
 
@@ -26,6 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
         });
 
         // Navegar para a próxima tela
+        // ignore: use_build_context_synchronously
         Navigator.pushNamed(context, '/');
       });
     }
@@ -67,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 16.0),
                 TextFormField(
                   controller: _loginController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Login',
                     border: OutlineInputBorder(
                       borderSide: BorderSide(color: Color(0xFF92C0C8)),
