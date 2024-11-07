@@ -7,24 +7,35 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-
-app.post('/eventos', async (req,res) => {
+app.post('/eventos', async (req, res) => {
     const evento = req.body;
 
-    // await sleep(5000);
+    try {
+        // Determina o tipo de evento e envia para endpoints específicos
+        switch (evento.tipo) {
+            case 'UsuarioCriado':
+                await axios.post('http://localhost:4000/eventos', evento); // Serviço de usuários
+                break;
 
-    // axios.post('http://localhost:4000/eventos', evento);
-    axios.post('http://localhost:6001/eventos', evento);
+            // case 'PedidoRealizado':
+            //     await axios.post('http://localhost:5000/eventos', evento); // Serviço de pedidos
+            //     break;
 
+            // case 'PagamentoProcessado':
+            //     await axios.post('http://localhost:6001/eventos', evento); // Serviço de pagamentos
+            //     break;
 
-    res.status(200).send({msg:"ok"});
+            default:
+                console.log("Tipo de evento desconhecido:", evento.tipo);
+        }
 
+        res.status(200).send({ msg: "Evento processado com sucesso" });
+    } catch (error) {
+        console.error("Erro ao processar evento:", error);
+        res.status(500).send({ msg: "Erro ao processar evento" });
+    }
 });
 
-app.listen(10000, () =>{
-    console.log("Barramento de eventos. Porta 10000.")
-})
+app.listen(10000, () => {
+    console.log("Barramento de eventos. Porta 10000.");
+});

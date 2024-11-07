@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class CreateAccountScreen extends StatelessWidget {
   final TextEditingController _nameController = TextEditingController();
@@ -6,12 +8,50 @@ class CreateAccountScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  Future<void> _createUser(BuildContext context) async {
+    final String name = _nameController.text;
+    final String phone = _phoneController.text;
+    final String email = _emailController.text;
+    final String password = _passwordController.text;
+
+    final url = Uri.parse('http://localhost:4000/criarUsuario'); // Endpoint do backend
+
+    try {
+      final response = await http.put(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'nome': name,
+          'celular': phone,
+          'email': email,
+          'senha': password,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        // Usuário criado com sucesso, navega para a HomeScreen
+        Navigator.pushNamed(context, '/');
+      } else {
+        // Exibe uma mensagem de erro se a criação falhar
+        print('Erro ao criar o usuário: ${response.body}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao criar conta')),
+        );
+      }
+    } catch (e) {
+      print('Erro na requisição: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro de conexão com o servidor')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Criar Conta'),
-        automaticallyImplyLeading: false,  // Remove o botão de "voltar"
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -54,15 +94,13 @@ class CreateAccountScreen extends StatelessWidget {
             SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
-                // Ao criar a conta, navega para a HomeScreen
-                Navigator.pushNamed(context, '/');
+                _createUser(context); // Chama a função para enviar os dados
               },
               child: Text('Criar Conta'),
             ),
             TextButton(
               onPressed: () {
-                // Volta para a tela de login
-                Navigator.pushNamed(context, '/login');
+                Navigator.pushNamed(context, '/login'); // Volta para a tela de login
               },
               child: Text('Voltar para o Login'),
             ),
