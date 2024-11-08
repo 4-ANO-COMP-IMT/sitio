@@ -201,7 +201,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
           child: Center(
             child: Text(
               time,
-              style: const TextStyle(fontSize: 16, color: Color(0xFF033F58)),
+              style: const TextStyle(fontSize: 16, color: Color(0xFF033F58), fontWeight: FontWeight.bold),
             ),
           ),
         ),
