@@ -16,9 +16,10 @@ class HomeScreen extends StatelessWidget {
             const Text(
                   'Bem vindo à UPodz!',
                   style: TextStyle(
-                    fontSize: 40,
+                    fontSize: 50,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF033F58),
+                    
                   ),
                 ),
             const SizedBox(height: 48.0), // Espaçamento entre os botões
@@ -36,11 +37,11 @@ class HomeScreen extends StatelessWidget {
                   elevation: 3,
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16), // Melhorando o padding
                 ),
-                icon: const Icon(Icons.calendar_month, color: Color(0xFF033F58), size: 40),
+                icon: const Icon(Icons.calendar_month, color: Color(0xFF033F58), size: 35),
                 label: const Text(
                   'Reservar Pod',
                   style: TextStyle(
-                    fontSize: 40,
+                    fontSize: 35,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF033F58),
                   ),
@@ -60,11 +61,11 @@ class HomeScreen extends StatelessWidget {
                   elevation: 3,
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 ),
-                icon: const Icon(Icons.bookmark, color: Color(0xFF033F58), size: 40),
+                icon: const Icon(Icons.bookmark, color: Color(0xFF033F58), size: 35),
                 label: const Text(
                   'Minhas Reservas',
                   style: TextStyle(
-                    fontSize: 40,
+                    fontSize: 35,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF033F58),
                   ),
@@ -86,11 +87,11 @@ class HomeScreen extends StatelessWidget {
                   elevation: 3,
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 ),
-                icon: const Icon(Icons.logout, color: Color(0xFF033F58), size: 40),
+                icon: const Icon(Icons.logout, color: Color(0xFF033F58), size: 35),
                 label: const Text(
                   'Sair',
                   style: TextStyle(
-                    fontSize: 40,
+                    fontSize: 35,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF033F58),
                   ),
