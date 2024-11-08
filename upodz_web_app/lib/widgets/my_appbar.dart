@@ -8,7 +8,14 @@ class MyAppbar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
-      backgroundColor: const Color(0xFF033F58), // Cor da AppBar
+      backgroundColor: const Color.fromARGB(137, 3, 62, 88), // Cor da AppBar
+      flexibleSpace: IconButton(
+        onPressed: () => Navigator.pushNamed(context, '/'), // Navega para a tela de reservas
+        icon: const Image(
+          image: AssetImage('assets/UPodzzH.png'), // Logo da UPodz
+          fit: BoxFit.contain,
+        ),
+      ),
       actions: [
         IconButton(
           icon: const Icon(Icons.logout),
@@ -28,7 +35,7 @@ class MyAppbar extends StatelessWidget implements PreferredSizeWidget {
           icon: const Icon(Icons.bookmark),
           color: const Color(0xFFEBFFFF), // Cor do ícone de bookmark
           onPressed: () {
-            Navigator.pushNamed(context, '/reservations'); // Navega para a tela de login
+            Navigator.pushNamed(context, '/reservation'); // Navega para a tela de login
           },
         ),
       ],
