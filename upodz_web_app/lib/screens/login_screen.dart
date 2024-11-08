@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,6 +13,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _loginController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  
   bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
 
@@ -19,6 +22,8 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         _isLoading = true;
       });
+
+      _checkLogin(context);
 
       // Simulação de um processo de login com delay
       Future.delayed(const Duration(seconds: 1), () {
@@ -46,6 +51,53 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return null;
   }
+
+  Future<void> _checkLogin(BuildContext context) async {
+    final String email = _loginController.text;
+    final String password = _passwordController.text;
+
+    final url = Uri.parse('http://localhost:5000/SolicitacaoLogin'); // Endpoint do backend
+
+    try {
+      final response = await http.put(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': email,
+          'senha': password,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        // Usuário criado com sucesso, navega para a HomeScreen
+        Navigator.pushNamed(context, '/');
+      } else {
+        // Exibe uma mensagem de erro se a criação falhar
+        print('Erro ao criar o usuário: ${response.body}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao criar conta')),
+        );
+      }
+    } catch (e) {
+      print('Erro na requisição: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro de conexão com o servidor')),
+      );
+    }
+  }
+
+            //   ElevatedButton(
+            //   onPressed: () {
+            //     // Lógica de login (simulada)
+            //     print('Login: ${_emailController.text}');
+            //     print('Senha: ${_passwordController.text}');
+            //     Navigator.pushNamed(context, '/');
+            //     _checkLogin(context); // Chama a função para enviar os dados
+            //   },
+            //   child: Text('Login'),
+            // ),
+
+
 
   @override
   Widget build(BuildContext context) {

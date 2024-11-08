@@ -49,6 +49,14 @@ class CreateAccountScreen extends StatelessWidget {
     }
   }
 
+            //   SizedBox(height: 16.0),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     _createUser(context); // Chama a função para enviar os dados
+            //   },
+            //   child: Text('Criar Conta'),
+            // ),
+
   String? _validateEmail(String? value) {
     if (value == null || value.isEmpty) {
       return 'Por favor, insira seu email';
