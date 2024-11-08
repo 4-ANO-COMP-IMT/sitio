@@ -6,7 +6,6 @@ class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _CalendarScreenState createState() => _CalendarScreenState();
 }
 
@@ -14,10 +13,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
 
-  // Limit the calendar to the next 7 days
+  // Limita o calendário para os próximos 7 dias
   DateTime get _lastDay => DateTime.now().add(const Duration(days: 7));
 
-  // Generate time slots in 30-minute intervals
+  // Gera slots de horário em intervalos de 30 minutos
   List<String> _generateTimeSlots() {
     List<String> slots = [];
     for (int hour = 0; hour < 24; hour++) {
@@ -35,48 +34,84 @@ class _CalendarScreenState extends State<CalendarScreen> {
     List<String> timeSlots = _generateTimeSlots();
 
     return Scaffold(
+      backgroundColor: const Color(0xFFEBFFFF), // Cor de fundo
       appBar: const MyAppbar(),
       body: Row(
         children: [
-          // Calendar on the left side
+          // Calendário no lado esquerdo
           Expanded(
             flex: 1,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Card(
-                elevation: 4,
-                child: TableCalendar(
-                  firstDay: DateTime.now(),
-                  lastDay: _lastDay,
-                  focusedDay: _focusedDay,
-                  selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                  onDaySelected: (selectedDay, focusedDay) {
-                    setState(() {
-                      _selectedDay = selectedDay;
-                      _focusedDay = focusedDay;
-                    });
-                  },
-                  calendarStyle: CalendarStyle(
-                    selectedDecoration: const BoxDecoration(
-                      color: Color(0xFF033F58),
-                      shape: BoxShape.circle,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Card(
+                    color: const Color.fromARGB(255, 245, 255, 255), // Fundo do card
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      side: const BorderSide(color: Color(0xFF033F58), width: 1.5),
                     ),
-                    todayDecoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      shape: BoxShape.circle,
+                    child: Padding(
+                      padding: const EdgeInsets.all(32.0),
+                      child: TableCalendar(
+                        firstDay: DateTime.now(),
+                        lastDay: _lastDay,
+                        focusedDay: _focusedDay,
+                        selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                        onDaySelected: (selectedDay, focusedDay) {
+                          setState(() {
+                            _selectedDay = selectedDay;
+                            _focusedDay = focusedDay;
+                          });
+                        },
+                        calendarStyle: CalendarStyle(
+                          selectedDecoration: const BoxDecoration(
+                            color: Color(0xFF033F58),
+                            shape: BoxShape.circle,
+                          ),
+                          todayDecoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            shape: BoxShape.circle,
+                          ),
+                          weekendTextStyle: const TextStyle(color: Color(0xFF033F58)),
+                          defaultTextStyle: const TextStyle(color: Color(0xFF033F58)),
+                        ),
+                        daysOfWeekStyle: const DaysOfWeekStyle(
+                          weekdayStyle: TextStyle(color: Color(0xFF033F58)),
+                          weekendStyle: TextStyle(color: Color(0xFF033F58)),
+                        ),
+                        headerStyle: const HeaderStyle(
+                          formatButtonVisible: false,
+                          titleCentered: true,
+                          titleTextStyle: TextStyle(
+                            color: Color(0xFF033F58),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                          leftChevronIcon: Icon(Icons.chevron_left, color: Color(0xFF033F58)),
+                          rightChevronIcon: Icon(Icons.chevron_right, color: Color(0xFF033F58)),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
             ),
           ),
-          // Schedule table on the right side
+          // Tabela de horários no lado direito
           Expanded(
             flex: 1,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Card(
+                color: const Color.fromARGB(255, 245, 255, 255),
                 elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  side: const BorderSide(color: Color(0xFF033F58), width: 1.5),
+                ),
                 child: Column(
                   children: [
                     Container(
@@ -86,11 +121,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
+                          color: Color(0xFF033F58),
                         ),
                       ),
                     ),
                     Expanded(
                       child: SingleChildScrollView(
+                        padding: const EdgeInsets.all(16.0),
                         child: Table(
                           children: [
                             for (int i = 0; i < timeSlots.length; i += 4)
@@ -100,7 +137,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                   if (i + 1 < timeSlots.length)
                                     _buildTimeSlotCell(timeSlots[i + 1])
                                   else
-                                    Container(), // Empty cell if no slot available
+                                    Container(),
                                   if (i + 2 < timeSlots.length)
                                     _buildTimeSlotCell(timeSlots[i + 2])
                                   else
@@ -125,7 +162,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  // Function to build each time slot cell
+  // Função para construir cada célula de horário
   Widget _buildTimeSlotCell(String time) {
     return InkWell(
       onTap: () {
@@ -134,13 +171,19 @@ class _CalendarScreenState extends State<CalendarScreen> {
           builder: (context) {
             return AlertDialog(
               title: const Text('Horário Selecionado'),
-              content: Text('Reserva efetuada para às $time no dia ${_selectedDay.day}/${_selectedDay.month}'),
+              content: Text(
+                'Reserva efetuada para às $time no dia ${_selectedDay.day}/${_selectedDay.month}',
+                style: const TextStyle(color: Color(0xFF033F58)),
+              ),
               actions: [
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: const Text('OK'),
+                  child: const Text(
+                    'OK',
+                    style: TextStyle(color: Color(0xFF033F58)),
+                  ),
                 ),
               ],
             );
@@ -149,10 +192,17 @@ class _CalendarScreenState extends State<CalendarScreen> {
       },
       child: Padding(
         padding: const EdgeInsets.all(12.0),
-        child: Center(
-          child: Text(
-            time,
-            style: const TextStyle(fontSize: 16),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.0),
+            border: Border.all(color: const Color(0xFF033F58), width: 1.5),
+          ),
+          padding: const EdgeInsets.all(8.0),
+          child: Center(
+            child: Text(
+              time,
+              style: const TextStyle(fontSize: 16, color: Color(0xFF033F58)),
+            ),
           ),
         ),
       ),
