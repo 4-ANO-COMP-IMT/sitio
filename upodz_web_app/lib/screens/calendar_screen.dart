@@ -29,6 +29,24 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return slots;
   }
 
+  // Verifica se o horário está disponível (não passou no dia atual)
+  bool _isTimeSlotAvailable(String time) {
+    if (_selectedDay.day == DateTime.now().day &&
+        _selectedDay.month == DateTime.now().month &&
+        _selectedDay.year == DateTime.now().year) {
+      final now = DateTime.now();
+      final selectedTime = DateTime(
+        _selectedDay.year,
+        _selectedDay.month,
+        _selectedDay.day,
+        int.parse(time.split(':')[0]),
+        int.parse(time.split(':')[1]),
+      );
+      return selectedTime.isAfter(now);
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     List<String> timeSlots = _generateTimeSlots();
@@ -60,6 +78,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         lastDay: _lastDay,
                         focusedDay: _focusedDay,
                         selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                        enabledDayPredicate: (day) {
+                          // Desabilita os domingos
+                          return day.weekday != DateTime.sunday;
+                        },
                         onDaySelected: (selectedDay, focusedDay) {
                           setState(() {
                             _selectedDay = selectedDay;
@@ -164,44 +186,56 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   // Função para construir cada célula de horário
   Widget _buildTimeSlotCell(String time) {
+    final isAvailable = _isTimeSlotAvailable(time);
+
     return InkWell(
-      onTap: () {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text('Horário Selecionado'),
-              content: Text(
-                'Reserva efetuada para às $time no dia ${_selectedDay.day}/${_selectedDay.month}',
-                style: const TextStyle(color: Color(0xFF033F58)),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text(
-                    'OK',
-                    style: TextStyle(color: Color(0xFF033F58)),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      },
+      onTap: isAvailable
+          ? () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text('Horário Selecionado'),
+                    content: Text(
+                      'Reserva efetuada para às $time no dia ${_selectedDay.day}/${_selectedDay.month}',
+                      style: const TextStyle(color: Color(0xFF033F58)),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text(
+                          'OK',
+                          style: TextStyle(color: Color(0xFF033F58)),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            }
+          : null,
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.0),
-            border: Border.all(color: const Color(0xFF033F58), width: 1.5),
+            border: Border.all(
+              color: isAvailable ? const Color(0xFF033F58) : Colors.grey,
+              width: 1.5,
+            ),
+            color: isAvailable ? Colors.transparent : Colors.grey[200],
           ),
           padding: const EdgeInsets.all(8.0),
           child: Center(
             child: Text(
               time,
-              style: const TextStyle(fontSize: 16, color: Color(0xFF033F58), fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 16,
+                color: isAvailable ? const Color(0xFF033F58) : Colors.grey,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),

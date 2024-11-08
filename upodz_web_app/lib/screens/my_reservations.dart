@@ -18,6 +18,18 @@ class MyReservations extends StatelessWidget {
       "data": "12-11-24",
       "horario": "16:00 - 16:30",
     },
+    {
+      "data": "13-11-24",
+      "horario": "12:00 - 12:30",
+    },
+    {
+      "data": "14-11-24",
+      "horario": "08:00 - 08:30",
+    },
+    {
+      "data": "15-11-24",
+      "horario": "18:00 - 18:30",
+    }
   ];
 
   @override
