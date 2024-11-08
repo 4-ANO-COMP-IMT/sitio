@@ -61,7 +61,7 @@ class CreateAccountScreen extends StatelessWidget {
                 SizedBox(
                   width: 256,
                   height: 256,
-                  child: Image.asset('assets/UPodzz_256.png'),
+                  child: Image.asset('assets/UPodzz.png'),
                 ),
                 TextField(
                   controller: _nameController,

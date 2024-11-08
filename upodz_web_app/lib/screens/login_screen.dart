@@ -64,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   width: 256,
                   height: 256,
-                  child: Image.asset('assets/UPodzz_256.png'),
+                  child: Image.asset('assets/UPodzz.png'),
                 ),
                 const SizedBox(height: 16.0),
                 TextFormField(
