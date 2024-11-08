@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:upodz_web_app/screens/my_reservations.dart';
 import 'screens/home_screen.dart';
 import 'screens/calendar_screen.dart';
 import 'screens/login_screen.dart';
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/login',  // Define a rota inicial para a tela de login
+      initialRoute: '/reservation',  // Define a rota inicial para a tela de login
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {
           case '/':
@@ -29,6 +30,8 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(builder: (context) => const LoginScreen());
           case '/register':
             return MaterialPageRoute(builder: (context) => CreateAccountScreen());
+          case '/reservation':
+            return MaterialPageRoute(builder: (context) => MyReservations());
           default:
             return MaterialPageRoute(builder: (context) => const HomeScreen()); // Fallback
         }
