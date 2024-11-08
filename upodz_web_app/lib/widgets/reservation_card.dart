@@ -22,23 +22,49 @@ class ReservationCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            const SizedBox(height: 8),
-            Text(
-              "Data: $data",
-              style: const TextStyle(
-                fontSize: 14,
-                color: Color(0xFF033F58),
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 8),
+                Text(
+                  "Data: $data",
+                  style: const TextStyle(
+                    fontSize: 24,
+                    color: Color(0xFF033F58),
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "Horário: $horario",
+                  style: const TextStyle(
+                    fontSize: 24,
+                    color: Color(0xFF033F58),
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 8),
-            Text(
-              "Horário: $horario",
-              style: const TextStyle(
-                fontSize: 14,
-                color: Color(0xFF033F58),
+            const Spacer(),
+            SizedBox(
+              height: 70,
+              child: ElevatedButton(
+                onPressed: () {
+                  // Add your cancel action here
+                },
+                style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF033F58),
+                foregroundColor: Colors.white, // Define a cor do texto como branco
+                textStyle: const TextStyle(
+                  fontSize: 24,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+                child: const Text('Cancelar'),
               ),
             ),
           ],

@@ -8,15 +8,15 @@ class MyReservations extends StatelessWidget {
   final List<Map<String, String>> reservations = [
     {
       "data": "10-11-24",
-      "horário": "14:00 - 14:30",
+      "horario": "14:00 - 14:30",
     },
     {
       "data": "11-11-24",
-      "horário": "10:00 - 10:30",
+      "horario": "10:00 - 10:30",
     },
     {
       "data": "12-11-24",
-      "horário": "16:00 - 16:30",
+      "horario": "16:00 - 16:30",
     },
   ];
 
