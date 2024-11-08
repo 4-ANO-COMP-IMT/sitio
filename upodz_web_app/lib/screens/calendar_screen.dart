@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:upodz_web_app/widgets/my_appbar.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -34,32 +35,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     List<String> timeSlots = _generateTimeSlots();
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF033F58), // Cor da AppBar
-        actions: [
-          IconButton(
-          icon: const Icon(Icons.logout),
-          color: const Color(0xFFEBFFFF), // Cor do ícone de logout
-          onPressed: () {
-            Navigator.pushNamed(context, '/login'); // Navega para a tela de login
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.calendar_month),
-            color: const Color(0xFFEBFFFF), // Cor do ícone de cadastro
-            onPressed: () {
-              Navigator.pushNamed(context, '/calendar'); // Navega para a tela de cadastro
-            },
-          ),
-          IconButton(
-          icon: const Icon(Icons.bookmark),
-          color: const Color(0xFFEBFFFF), // Cor do ícone de logout
-          onPressed: () {
-            Navigator.pushNamed(context, '/login'); // Navega para a tela de login
-        },
-        ),
-        ],
-      ),
+      appBar: const MyAppbar(),
       body: Row(
         children: [
           // Calendar on the left side

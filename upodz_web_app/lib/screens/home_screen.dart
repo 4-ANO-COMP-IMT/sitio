@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:upodz_web_app/widgets/my_appbar.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -7,33 +8,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFEBFFFF), // Fundo da página
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: const Color(0xFF033F58), // Cor da AppBar
-        actions: [
-          IconButton(
-          icon: const Icon(Icons.logout),
-          color: const Color(0xFFEBFFFF), // Cor do ícone de logout
-          onPressed: () {
-            Navigator.pushNamed(context, '/login'); // Navega para a tela de login
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.calendar_month),
-            color: const Color(0xFFEBFFFF), // Cor do ícone de cadastro
-            onPressed: () {
-              Navigator.pushNamed(context, '/calendar'); // Navega para a tela de cadastro
-            },
-          ),
-          IconButton(
-          icon: const Icon(Icons.bookmark),
-          color: const Color(0xFFEBFFFF), // Cor do ícone de logout
-          onPressed: () {
-            Navigator.pushNamed(context, '/login'); // Navega para a tela de login
-        },
-        ),
-        ],
-      ),
+      appBar: const MyAppbar(), 
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
