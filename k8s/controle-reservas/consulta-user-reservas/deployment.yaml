@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: consulta-user-reservas
+  labels:
+    app: consulta-user-reservas
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: consulta-user-reservas
+  template:
+    metadata:
+      labels:
+        app: consulta-user-reservas
+    spec:
+      containers:
+      - name: consulta-user-reservas
+        image: caiomc03rx/consulta-user-reservas:latest
+        ports:
+        - containerPort: 7003
+        env:
+        - name: NODE_ENV
+          value: "production"

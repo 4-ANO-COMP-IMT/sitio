@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: consulta-todas-reservas-service
+spec:
+  type: NodePort 
+  ports:
+    - port: 7002       # Porta interna no cluster
+      targetPort: 7002 # Porta no container
+      nodePort: 30002   # Porta exposta no host
+  selector:
+    app: consulta-todas-reservas
