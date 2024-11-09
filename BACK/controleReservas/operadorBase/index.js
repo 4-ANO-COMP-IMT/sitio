@@ -7,10 +7,10 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const filePath = path.join(__dirname, '..', 'baseReservas.json'); // Caminho para o arquivo de usuários
+const filePath = path.join(__dirname, '..', 'baseReservas.json'); // Caminho para o arquivo de reservas
 let baseConsulta = {};
 
-// Carregar os dados de usuários do arquivo JSON ao iniciar o servidor
+// Carregar os dados de reservas do arquivo JSON ao iniciar o servidor
 function carregarBaseReservas() {
     try {
         const data = fs.readFileSync(filePath, 'utf8');
@@ -37,28 +37,14 @@ const funcoes = {
         baseConsulta[Object.keys(baseConsulta).length] = dadosReserva;
         atualizarBaseReservas();
     },
-    ConsultaReservas: () => baseConsulta // Retorna todas as reservas
-
-    // SolicitacaoLogin: (dataUsuario) => {
-    //     const { email, senha } = dataUsuario;
-    //     console.log(`Original: ${email}, ${senha}`);
-    //     const usuario = Object.values(baseConsulta).find((u) => {
-    //         // Log para verificar cada usuário na base
-    //         console.log(`Comparando com: ${u.email}, ${u.senha}`);
-    //         return u.email === email && u.senha === senha;
-    //     });
-
-    //     if (usuario) {
-    //         console.log("Login bem-sucedido:", usuario);
-    //         return { status: "sucesso", mensagem: "Login bem-sucedido", usuario: usuario };
-    //     } else {
-    //         console.log("Falha no login: usuário não encontrado.");
-    //         return { status: "falha", mensagem: "Email ou senha incorretos" };
-    //     }
-    // },
+    ConsultaReservas: () => baseConsulta, // Retorna todas as reservas
+    ConsultaUserReservas: (dados) => {
+        const email = dados.email;
+        return Object.values(baseConsulta).filter((reserva) => reserva.email === email);
+    }
 };
 
-// Rota para visualizar a base de usuários (para verificação)
+// Rota para visualizar a base de reservas (para verificação)
 app.get("/controleBase", (req, res) => {
     res.status(200).send(baseConsulta);
 });
@@ -70,10 +56,10 @@ app.post("/eventos", (req, res) => {
 
     if (funcoes[tipo]) {
         const resultado = funcoes[tipo](dados); // Executa a função correspondente ao tipo de evento
-        
-        // Se o tipo for ConsultaReservas, retorna diretamente baseConsulta
-        if (tipo === "ConsultaReservas") {
-            res.status(200).send(resultado); // Retorna o JSON com todas as reservas
+
+        // Se o tipo for ConsultaReservas ou ConsultaUserReservas, retorna os dados diretamente
+        if (tipo === "ConsultaReservas" || tipo === "ConsultaUserReservas") {
+            res.status(200).send(resultado); // Retorna o JSON com as reservas filtradas ou todas as reservas
         } else {
             res.status(200).send({ mensagem: "Evento processado com sucesso" });
         }
@@ -82,8 +68,7 @@ app.post("/eventos", (req, res) => {
     }
 });
 
-
-// Carrega os usuários do arquivo JSON ao iniciar o servidor
+// Carrega as reservas do arquivo JSON ao iniciar o servidor
 carregarBaseReservas();
 
 app.listen(7001, () => console.log("Consultas Reservas. Porta 7001"));

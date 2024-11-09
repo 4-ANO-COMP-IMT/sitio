@@ -1,58 +1,89 @@
 import 'package:flutter/material.dart';
 import 'package:upodz_web_app/widgets/my_appbar.dart';
 import 'package:upodz_web_app/widgets/reservation_card.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
-class MyReservations extends StatelessWidget {
+class MyReservations extends StatefulWidget {
   MyReservations({super.key});
 
-  final List<Map<String, String>> reservations = [
-    {
-      "data": "10-11-24",
-      "horario": "14:00 - 14:30",
-    },
-    {
-      "data": "11-11-24",
-      "horario": "10:00 - 10:30",
-    },
-    {
-      "data": "12-11-24",
-      "horario": "16:00 - 16:30",
-    },
-    {
-      "data": "13-11-24",
-      "horario": "12:00 - 12:30",
-    },
-    {
-      "data": "14-11-24",
-      "horario": "08:00 - 08:30",
-    },
-    {
-      "data": "15-11-24",
-      "horario": "18:00 - 18:30",
+  @override
+  _MyReservationsState createState() => _MyReservationsState();
+}
+
+class _MyReservationsState extends State<MyReservations> {
+  List<Map<String, dynamic>> reservations = []; // Lista para armazenar as reservas
+  bool isLoading = true; // Controla o estado de carregamento
+
+  @override
+  void initState() {
+    super.initState();
+    carregarReservasUsuario(); // Chama a função para carregar as reservas
+  }
+
+  // Função para recuperar o e-mail do usuário logado
+  Future<String?> recuperarEmail() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('userEmail');
+  }
+
+  // Função para buscar reservas do usuário no backend
+  Future<void> carregarReservasUsuario() async {
+    String? email = await recuperarEmail();
+    if (email == null) {
+      print("❄️ Erro: E-mail do usuário não encontrado ❄️");
+      return;
     }
-  ];
+
+    final url = Uri.parse('http://localhost:7003/consultaUserReservas');
+    print("❄️ Enviando solicitação PUT para o backend com o e-mail: $email ❄️");
+
+    try {
+      final response = await http.put(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({"email": email}),
+      );
+
+      print("❄️ Status da resposta do backend: ${response.statusCode} ❄️");
+      if (response.statusCode == 200) {
+        // Processa a resposta...
+      } else {
+        print("❄️ Erro ao carregar reservas: Status ${response.statusCode} ❄️");
+      }
+    } catch (e) {
+      print("❄️ Erro ao carregar reservas: $e ❄️");
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEBFFFF), // Cor de fundo
+      backgroundColor: const Color(0xFFEBFFFF),
       appBar: const MyAppbar(),
-      body: Center(
-        child: Container(
-          width: 700,
-          padding: const EdgeInsets.all(16.0),
-          child: ListView.builder(
-          itemCount: reservations.length,
-          itemBuilder: (context, index) {
-            final reservation = reservations[index];
-            return ReservationCard(
-              data: reservation["data"] ?? '',
-              horario: reservation["horario"] ?? '',
-            );
-          },
-        ),
-        ),
-      ),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator()) // Mostra o indicador de carregamento
+          : Center(
+              child: Container(
+                width: 700,
+                padding: const EdgeInsets.all(16.0),
+                child: reservations.isEmpty
+                    ? const Text("Nenhuma reserva encontrada.")
+                    : ListView.builder(
+                        itemCount: reservations.length,
+                        itemBuilder: (context, index) {
+                          final reservation = reservations[index];
+                          return ReservationCard(
+                            id: reservation["id"],
+                            data: reservation["data"],
+                            horario: reservation["horario"],
+                          );
+                        },
+                      ),
+              ),
+            ),
     );
   }
 }

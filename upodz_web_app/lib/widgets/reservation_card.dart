@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class ReservationCard extends StatelessWidget {
+  final String id;
   final String data;
   final String horario;
 
   const ReservationCard({
     super.key,
+    required this.id,
     required this.data,
     required this.horario,
   });
