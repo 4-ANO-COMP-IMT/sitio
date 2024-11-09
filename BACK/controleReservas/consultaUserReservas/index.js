@@ -6,12 +6,12 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.put('/consultaTodasReservas', async (req, res) => {
+app.get('/consultaTodasReservas', async (req, res) => {
     try {
         // Envia um evento de consulta para o barramento
         const evento = { tipo: "ConsultaReservas", dados: {} };
+        console.log("Pre-envio consulta para Barramento");
         const resposta = await axios.post('http://localhost:10000/eventos', evento);
-        console.log("Enviada consulta para Barramento");
 
         // Log do conteúdo do evento recebido
         console.log("Evento recebido do barramento:", resposta.data);
@@ -23,6 +23,7 @@ app.put('/consultaTodasReservas', async (req, res) => {
         res.status(500).send({ msg: "Erro ao consultar reservas" });
     }
 });
+
 
 
 

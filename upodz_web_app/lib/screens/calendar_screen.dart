@@ -61,30 +61,37 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return true;
   }
 
-  Future<void> criarReserva(String email, String capsula, String data, String horario) async {
-    final url = Uri.parse('http://localhost:7000/criarReserva'); // Endpoint do backend
+    Future<void> criarReserva(String email, String capsula, String data, String horario) async {
+      final url = Uri.parse('http://localhost:7000/criarReserva'); // Endpoint do backend
 
-    try {
-      final response = await http.put(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          "email": email,
-          "capsula": capsula,
-          "data": data,
-          "horario": horario,
-        }),
-      );
+      try {
+        final response = await http.put(
+          url,
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({
+            "email": email,
+            "capsula": capsula,
+            "data": data,
+            "horario": horario,
+          }),
+        );
 
-      if (response.statusCode == 201) {
-        print("Reserva criada com sucesso: ${response.body}");
-      } else {
-        print("Erro ao criar reserva: ${response.statusCode} - ${response.body}");
+        if (response.statusCode == 201) {
+          print("Reserva criada com sucesso: ${response.body}");
+
+          // Após criar a reserva, chamar carregarReservas para atualizar a lista de horários ocupados
+          await carregarReservas();
+
+          // Atualiza a interface do usuário após a atualização
+          setState(() {});
+        } else {
+          print("Erro ao criar reserva: ${response.statusCode} - ${response.body}");
+        }
+      } catch (e) {
+        print("Erro ao se comunicar com o backend: $e");
       }
-    } catch (e) {
-      print("Erro ao se comunicar com o backend: $e");
     }
-  }
+
 
     Future<void> carregarReservas() async {
     print("Iniciando carregarReservas"); // Confirma se o método está sendo chamado

@@ -19,5 +19,12 @@
     "celular": "666",
     "email": "gobert.gumes@zaza.com",
     "senha": "0000"
+  },
+  "3": {
+    "id": 4,
+    "nome": "Caio",
+    "celular": "190",
+    "email": "PogChamp@gmail.com",
+    "senha": "0000"
   }
 }
