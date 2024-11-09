@@ -32,14 +32,21 @@ app.post('/eventos', async (req, res) => {
 
             case 'ConsultaReservas':
                 const respostaConsulta = await axios.post('http://localhost:7001/eventos', evento);
-                console.log("Resposta do operador para ConsultaReservas:", respostaConsulta.data);
+                // console.log("Resposta do operador para ConsultaReservas:", respostaConsulta.data);
                 res.status(200).send(respostaConsulta.data); // Retorna a resposta ao cliente
                 return; // Termina para não responder duas vezes
 
             case 'ConsultaUserReservas': // Adiciona o caso para 'ConsultaUserReservas'
                 const respostaUserReservas = await axios.post('http://localhost:7001/eventos', evento);
-                console.log("Resposta do operador para ConsultaUserReservas:", respostaUserReservas.data);
+                // console.log("Resposta do operador para ConsultaUserReservas:", respostaUserReservas.data);
                 res.status(200).send(respostaUserReservas.data); // Retorna a resposta ao cliente
+                return;
+                
+            case 'ReservaCancelada':
+                // Corrigido para passar `evento` em vez de `tipo` e `dados` separadamente
+                const respostaCancelamento = await axios.post('http://localhost:7001/eventos', evento);
+                console.log("Resposta do operador para ReservaCancelada:", respostaCancelamento.data);
+                res.status(200).send(respostaCancelamento.data);
                 return;
 
             default:

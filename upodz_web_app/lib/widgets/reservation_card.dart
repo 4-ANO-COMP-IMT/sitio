@@ -4,12 +4,14 @@ class ReservationCard extends StatelessWidget {
   final String id;
   final String data;
   final String horario;
+  final VoidCallback onCancel;
 
   const ReservationCard({
     super.key,
     required this.id,
     required this.data,
     required this.horario,
+    required this.onCancel,
   });
 
   @override
@@ -35,7 +37,7 @@ class ReservationCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 24,
                     color: Color(0xFF033F58),
-                    fontWeight: FontWeight.bold
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -44,7 +46,7 @@ class ReservationCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 24,
                     color: Color(0xFF033F58),
-                    fontWeight: FontWeight.bold
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
@@ -53,19 +55,17 @@ class ReservationCard extends StatelessWidget {
             SizedBox(
               height: 70,
               child: ElevatedButton(
-                onPressed: () {
-                  // Add your cancel action here
-                },
+                onPressed: onCancel, // Aciona a função de cancelamento passada pelo MyReservations
                 style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF033F58),
-                foregroundColor: Colors.white, // Define a cor do texto como branco
-                textStyle: const TextStyle(
-                  fontSize: 24,
+                  backgroundColor: const Color(0xFF033F58),
+                  foregroundColor: Colors.white, // Define a cor do texto como branco
+                  textStyle: const TextStyle(
+                    fontSize: 24,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
                 child: const Text('Cancelar'),
               ),
             ),

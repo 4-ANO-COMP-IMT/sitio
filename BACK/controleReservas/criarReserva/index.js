@@ -6,7 +6,7 @@ const cors = require('cors');
 
 app.use(bodyParser.json());
 app.use(cors());
-contador = 0;
+contador = 1;
 
 let baseLocal = {};
 

@@ -41,7 +41,23 @@ const funcoes = {
     ConsultaUserReservas: (dados) => {
         const email = dados.email;
         return Object.values(baseConsulta).filter((reserva) => reserva.email === email);
-    }
+    },
+    ReservaCancelada: ({ id }) => {
+        console.log(`Tentativa de cancelamento para ID ${id}`);
+
+        // Convertendo o ID para string para garantir a comparação correta
+        const chaveParaRemover = Object.keys(baseConsulta).find(key => String(baseConsulta[key].id) === String(id));
+
+        if (chaveParaRemover) {
+            delete baseConsulta[chaveParaRemover]; // Remove a reserva encontrada
+            atualizarBaseReservas();
+            console.log(`❄️ Reserva com ID ${id} removida com sucesso da base ❄️`);
+            return { mensagem: `Reserva com ID ${id} foi cancelada` };
+        } else {
+            console.log(`⚠️ Reserva com ID ${id} não encontrada na base`);
+            return { mensagem: `Reserva com ID ${id} não encontrada` };
+        }
+    },
 };
 
 // Rota para visualizar a base de reservas (para verificação)
@@ -61,7 +77,7 @@ app.post("/eventos", (req, res) => {
         if (tipo === "ConsultaReservas" || tipo === "ConsultaUserReservas") {
             res.status(200).send(resultado); // Retorna o JSON com as reservas filtradas ou todas as reservas
         } else {
-            res.status(200).send({ mensagem: "Evento processado com sucesso" });
+            res.status(200).send(resultado || { mensagem: "Evento processado com sucesso" });
         }
     } else {
         res.status(400).send({ erro: "Tipo de evento não suportado" });

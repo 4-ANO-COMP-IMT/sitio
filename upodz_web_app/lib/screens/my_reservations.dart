@@ -13,22 +13,20 @@ class MyReservations extends StatefulWidget {
 }
 
 class _MyReservationsState extends State<MyReservations> {
-  List<Map<String, dynamic>> reservations = []; // Lista para armazenar as reservas
-  bool isLoading = true; // Controla o estado de carregamento
+  List<Map<String, dynamic>> reservations = [];
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    carregarReservasUsuario(); // Chama a função para carregar as reservas
+    carregarReservasUsuario();
   }
 
-  // Função para recuperar o e-mail do usuário logado
   Future<String?> recuperarEmail() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('userEmail');
   }
 
-  // Função para buscar reservas do usuário no backend
   Future<void> carregarReservasUsuario() async {
     String? email = await recuperarEmail();
     if (email == null) {
@@ -48,19 +46,17 @@ class _MyReservationsState extends State<MyReservations> {
 
       print("❄️ Status da resposta do backend: ${response.statusCode} ❄️");
       if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-        print("❄️ Dados recebidos: $data ❄️");
+        final reservas = jsonDecode(response.body) as List<dynamic>;
 
         setState(() {
-          // Processa cada item e cria uma lista de mapas com os dados necessários
-          reservations = data.map<Map<String, dynamic>>((reserva) {
+          reservations = reservas.map<Map<String, dynamic>>((reserva) {
             return {
               "id": reserva["id"].toString(),
               "data": reserva["data"] ?? '',
               "horario": reserva["horario"] ?? ''
             };
           }).toList();
-          isLoading = false; // Carregamento completo
+          isLoading = false;
         });
       } else {
         print("❄️ Erro ao carregar reservas: Status ${response.statusCode} ❄️");
@@ -70,13 +66,35 @@ class _MyReservationsState extends State<MyReservations> {
     }
   }
 
+  Future<void> cancelarReserva(String id) async {
+    final url = Uri.parse('http://localhost:7004/cancelarReserva');
+    print("❄️ Enviando pedido de cancelamento para reserva $id ❄️");
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({"id": id}),
+      );
+
+      if (response.statusCode == 200) {
+        print("❄️ Reserva $id cancelada com sucesso ❄️");
+        await carregarReservasUsuario(); // Atualiza a lista de reservas
+      } else {
+        print("❄️ Erro ao cancelar a reserva: ${response.body} ❄️");
+      }
+    } catch (e) {
+      print("❄️ Erro ao se comunicar com o backend: $e ❄️");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFEBFFFF),
       appBar: const MyAppbar(),
       body: isLoading
-          ? Center(child: CircularProgressIndicator()) // Mostra o indicador de carregamento
+          ? Center(child: CircularProgressIndicator())
           : Center(
               child: Container(
                 width: 700,
@@ -91,6 +109,7 @@ class _MyReservationsState extends State<MyReservations> {
                             id: reservation["id"],
                             data: reservation["data"],
                             horario: reservation["horario"],
+                            onCancel: () => cancelarReserva(reservation["id"]), // Aciona o cancelamento
                           );
                         },
                       ),
