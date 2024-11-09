@@ -48,7 +48,20 @@ class _MyReservationsState extends State<MyReservations> {
 
       print("❄️ Status da resposta do backend: ${response.statusCode} ❄️");
       if (response.statusCode == 200) {
-        // Processa a resposta...
+        final List<dynamic> data = jsonDecode(response.body);
+        print("❄️ Dados recebidos: $data ❄️");
+
+        setState(() {
+          // Processa cada item e cria uma lista de mapas com os dados necessários
+          reservations = data.map<Map<String, dynamic>>((reserva) {
+            return {
+              "id": reserva["id"].toString(),
+              "data": reserva["data"] ?? '',
+              "horario": reserva["horario"] ?? ''
+            };
+          }).toList();
+          isLoading = false; // Carregamento completo
+        });
       } else {
         print("❄️ Erro ao carregar reservas: Status ${response.statusCode} ❄️");
       }
@@ -56,7 +69,6 @@ class _MyReservationsState extends State<MyReservations> {
       print("❄️ Erro ao carregar reservas: $e ❄️");
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
