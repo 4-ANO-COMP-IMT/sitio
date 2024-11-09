@@ -14,7 +14,7 @@ dependencies:
   table_calendar: ^3.0.0  # Calendar widget dependency
   cupertino_icons: ^1.0.8  # Use with CupertinoIcons class for iOS style icons
   http: ^0.13.5
-  provider: ^6.0.0
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_test:

@@ -26,5 +26,12 @@
     "celular": "190",
     "email": "PogChamp@gmail.com",
     "senha": "0000"
+  },
+  "4": {
+    "id": 5,
+    "nome": "andre",
+    "celular": "111",
+    "email": "andre@ma.com",
+    "senha": "0000"
   }
 }

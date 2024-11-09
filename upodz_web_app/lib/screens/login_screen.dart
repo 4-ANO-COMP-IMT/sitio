@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -41,40 +42,48 @@ class _LoginScreenState extends State<LoginScreen> {
     return null;
   }
 
-Future<void> _checkLogin(BuildContext context) async {
-  final String email = _loginController.text;
-  final String password = _passwordController.text;
-  final url = Uri.parse('http://localhost:5000/SolicitacaoLogin');
+  Future<void> salvarEmail(String email) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userEmail', email); // Salva o e-mail
+  }
 
-  try {
-    final response = await http.put(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'email': email, 'senha': password}),
-    );
+  Future<void> _checkLogin(BuildContext context) async {
+    final String email = _loginController.text;
+    final String password = _passwordController.text;
+    final url = Uri.parse('http://localhost:5000/SolicitacaoLogin');
 
-    setState(() {
-      _isLoading = false;
-    });
+    try {
+      final response = await http.put(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email, 'senha': password}),
+      );
 
-    if (response.statusCode == 200) {
-      Navigator.pushNamed(context, '/');
-    } else {
-      final errorMsg = jsonDecode(response.body)['mensagem'];
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (response.statusCode == 200) {
+        // Salva o e-mail após login bem-sucedido
+        await salvarEmail(email);
+        
+        Navigator.pushNamed(context, '/');  // Redireciona para a tela inicial
+      } else {
+        final errorMsg = jsonDecode(response.body)['mensagem'];
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMsg)),
+        );
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMsg)),
+        const SnackBar(content: Text('Erro de conexão com o servidor')),
       );
     }
-  } catch (e) {
-    setState(() {
-      _isLoading = false;
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Erro de conexão com o servidor')),
-    );
   }
-}
 
 
   @override

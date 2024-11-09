@@ -3,6 +3,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:upodz_web_app/widgets/my_appbar.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -18,11 +19,25 @@ class _CalendarScreenState extends State<CalendarScreen> {
   List<String> horariosOcupados = [];
   bool isLoading = false; // Adiciona o controle de estado de carregamento
 
+  Future<String?> recuperarEmail() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('userEmail');
+  }
+
   @override
   void initState() {
     super.initState();
     carregarReservas();
+    recuperarEmail().then((email) {
+      if (email != null) {
+        print("E-mail do usuário: $email");
+      } else {
+        print("Usuário não está logado.");
+      }
+    });
   }
+
+  
 
   // Limita o calendário para os próximos 7 dias
   DateTime get _lastDay => DateTime.now().add(const Duration(days: 7));
@@ -61,37 +76,37 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return true;
   }
 
-    Future<void> criarReserva(String email, String capsula, String data, String horario) async {
-      final url = Uri.parse('http://localhost:7000/criarReserva'); // Endpoint do backend
-
-      try {
-        final response = await http.put(
-          url,
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode({
-            "email": email,
-            "capsula": capsula,
-            "data": data,
-            "horario": horario,
-          }),
-        );
-
-        if (response.statusCode == 201) {
-          print("Reserva criada com sucesso: ${response.body}");
-
-          // Após criar a reserva, chamar carregarReservas para atualizar a lista de horários ocupados
-          await carregarReservas();
-
-          // Atualiza a interface do usuário após a atualização
-          setState(() {});
-        } else {
-          print("Erro ao criar reserva: ${response.statusCode} - ${response.body}");
-        }
-      } catch (e) {
-        print("Erro ao se comunicar com o backend: $e");
-      }
+  Future<void> criarReserva(String capsula, String data, String horario) async {
+    String? email = await recuperarEmail();
+    if (email == null) {
+      print("Erro: E-mail do usuário não encontrado.");
+      return;
     }
 
+    final url = Uri.parse('http://localhost:7000/criarReserva');
+    try {
+      final response = await http.put(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "email": email,
+          "capsula": capsula,
+          "data": data,
+          "horario": horario,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        print("Reserva criada com sucesso: ${response.body}");
+        await carregarReservas();
+        setState(() {});
+      } else {
+        print("Erro ao criar reserva: ${response.statusCode} - ${response.body}");
+      }
+    } catch (e) {
+      print("Erro ao se comunicar com o backend: $e");
+    }
+  }
 
     Future<void> carregarReservas() async {
     print("Iniciando carregarReservas"); // Confirma se o método está sendo chamado
@@ -125,162 +140,152 @@ class _CalendarScreenState extends State<CalendarScreen> {
     }
   }
 
+  Future<void> logout(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('userEmail');  // Remove o e-mail do SharedPreferences
 
+    Navigator.pushNamed(context, '/login');  // Redireciona para a tela de login
+  }
 
-
-    @override
+ @override
   Widget build(BuildContext context) {
-    List<String> timeSlots = _generateTimeSlots();
+    List<String> timeSlots = _generateTimeSlots(); // Gera os horários para exibir no calendário
 
     return Scaffold(
-      backgroundColor: const Color(0xFFEBFFFF), // Cor de fundo
-      appBar: const MyAppbar(),
-      body: isLoading // Verifica o estado de carregamento
-          ? Center(child: CircularProgressIndicator()) // Mostra o indicador de carregamento
-          : Row(
-              children: [
-                // Calendário no lado esquerdo
-                Expanded(
-                  flex: 1,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Card(
-                          color: const Color.fromARGB(255, 245, 255, 255), // Fundo do card
-                          elevation: 4,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            side: const BorderSide(color: Color(0xFF033F58), width: 1.5),
+      appBar: MyAppbar(),
+      backgroundColor: const Color(0xFFEBFFFF),
+      body: Row(
+        children: [
+          // Calendário no lado esquerdo
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Card(
+                    color: const Color.fromARGB(255, 245, 255, 255),
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      side: const BorderSide(color: Color(0xFF033F58), width: 1.5),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(32.0),
+                      child: TableCalendar(
+                        firstDay: DateTime.now(),
+                        lastDay: _lastDay,
+                        focusedDay: _focusedDay,
+                        selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                        enabledDayPredicate: (day) => day.weekday != DateTime.sunday,
+                        onDaySelected: (selectedDay, focusedDay) {
+                          if (!isSameDay(_selectedDay, selectedDay)) {
+                            setState(() {
+                              _selectedDay = selectedDay;
+                              _focusedDay = focusedDay;
+                            });
+                            carregarReservas(); // Carrega as reservas ao selecionar um novo dia
+                          }
+                        },
+                        calendarStyle: CalendarStyle(
+                          selectedDecoration: const BoxDecoration(
+                            color: Color(0xFF033F58),
+                            shape: BoxShape.circle,
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(32.0),
-                            child: TableCalendar(
-                              firstDay: DateTime.now(),
-                              lastDay: _lastDay,
-                              focusedDay: _focusedDay,
-                              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                              enabledDayPredicate: (day) {
-                                // Desabilita os domingos
-                                return day.weekday != DateTime.sunday;
-                              },
-                              onDaySelected: (selectedDay, focusedDay) {
-                                if (!isSameDay(_selectedDay, selectedDay)) {
-                                  setState(() {
-                                    _selectedDay = selectedDay;
-                                    _focusedDay = focusedDay;
-                                  });
-                                  print("Data selecionada: $_selectedDay"); // Print para depuração da data selecionada
-                                  carregarReservas(); // Carrega as reservas ao selecionar um novo dia
-                                }
-                              },
-
-                              calendarStyle: CalendarStyle(
-                                selectedDecoration: const BoxDecoration(
-                                  color: Color(0xFF033F58),
-                                  shape: BoxShape.circle,
-                                ),
-                                todayDecoration: BoxDecoration(
-                                  color: Colors.grey[300],
-                                  shape: BoxShape.circle,
-                                ),
-                                weekendTextStyle: const TextStyle(color: Color(0xFF033F58)),
-                                defaultTextStyle: const TextStyle(color: Color(0xFF033F58)),
-                              ),
-                              daysOfWeekStyle: const DaysOfWeekStyle(
-                                weekdayStyle: TextStyle(color: Color(0xFF033F58)),
-                                weekendStyle: TextStyle(color: Color(0xFF033F58)),
-                              ),
-                              headerStyle: const HeaderStyle(
-                                formatButtonVisible: false,
-                                titleCentered: true,
-                                titleTextStyle: TextStyle(
-                                  color: Color(0xFF033F58),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
-                                leftChevronIcon: Icon(Icons.chevron_left, color: Color(0xFF033F58)),
-                                rightChevronIcon: Icon(Icons.chevron_right, color: Color(0xFF033F58)),
-                              ),
-                            ),
+                          todayDecoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            shape: BoxShape.circle,
                           ),
+                          weekendTextStyle: const TextStyle(color: Color(0xFF033F58)),
+                          defaultTextStyle: const TextStyle(color: Color(0xFF033F58)),
                         ),
-                      ],
+                        daysOfWeekStyle: const DaysOfWeekStyle(
+                          weekdayStyle: TextStyle(color: Color(0xFF033F58)),
+                          weekendStyle: TextStyle(color: Color(0xFF033F58)),
+                        ),
+                        headerStyle: const HeaderStyle(
+                          formatButtonVisible: false,
+                          titleCentered: true,
+                          titleTextStyle: TextStyle(
+                            color: Color(0xFF033F58),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                          leftChevronIcon: Icon(Icons.chevron_left, color: Color(0xFF033F58)),
+                          rightChevronIcon: Icon(Icons.chevron_right, color: Color(0xFF033F58)),
+                        ),
+                      ),
                     ),
                   ),
+                ],
+              ),
+            ),
+          ),
+          // Tabela de horários no lado direito
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                color: const Color.fromARGB(255, 245, 255, 255),
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  side: const BorderSide(color: Color(0xFF033F58), width: 1.5),
                 ),
-                // Tabela de horários no lado direito
-                Expanded(
-                  flex: 1,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Card(
-                      color: const Color.fromARGB(255, 245, 255, 255),
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        side: const BorderSide(color: Color(0xFF033F58), width: 1.5),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        'Horários disponíveis para ${_selectedDay.day}/${_selectedDay.month}/${_selectedDay.year}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF033F58),
+                        ),
                       ),
-                      child: Column(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Text(
-                              'Horários disponíveis para ${_selectedDay.day}/${_selectedDay.month}/${_selectedDay.year}',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF033F58),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: SingleChildScrollView(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Table(
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Table(
+                          children: [
+                            for (int i = 0; i < timeSlots.length; i += 4)
+                              TableRow(
                                 children: [
-                                  for (int i = 0; i < timeSlots.length; i += 4)
-                                    TableRow(
-                                      children: [
-                                        _buildTimeSlotCell(timeSlots[i]),
-                                        if (i + 1 < timeSlots.length)
-                                          _buildTimeSlotCell(timeSlots[i + 1])
-                                        else
-                                          Container(),
-                                        if (i + 2 < timeSlots.length)
-                                          _buildTimeSlotCell(timeSlots[i + 2])
-                                        else
-                                          Container(),
-                                        if (i + 3 < timeSlots.length)
-                                          _buildTimeSlotCell(timeSlots[i + 3])
-                                        else
-                                          Container(),
-                                      ],
-                                    ),
+                                  _buildTimeSlotCell(timeSlots[i]),
+                                  if (i + 1 < timeSlots.length) _buildTimeSlotCell(timeSlots[i + 1]) else Container(),
+                                  if (i + 2 < timeSlots.length) _buildTimeSlotCell(timeSlots[i + 2]) else Container(),
+                                  if (i + 3 < timeSlots.length) _buildTimeSlotCell(timeSlots[i + 3]) else Container(),
                                 ],
                               ),
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
+          ),
+        ],
+      ),
     );
   }
 
-
   // Função para construir cada célula de horário
-  Widget _buildTimeSlotCell(String time) {
+    Widget _buildTimeSlotCell(String time) {
     final isAvailable = _isTimeSlotAvailable(time);
 
     return InkWell(
       onTap: isAvailable
-          ? () {
-              criarReserva("email_exemplo@dominio.com", "1", "${_selectedDay.day}/${_selectedDay.month}/${_selectedDay.year}", time);
+          ? () async {
+              // Chama a função para criar a reserva
+              await criarReserva("1", "${_selectedDay.day}/${_selectedDay.month}/${_selectedDay.year}", time);
+              
+              // Exibe o diálogo de confirmação
               showDialog(
                 context: context,
                 builder: (context) {
@@ -296,7 +301,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                           Navigator.of(context).pop();
                         },
                         child: const Text(
-                                                    'OK',
+                          'OK',
                           style: TextStyle(color: Color(0xFF033F58)),
                         ),
                       ),
