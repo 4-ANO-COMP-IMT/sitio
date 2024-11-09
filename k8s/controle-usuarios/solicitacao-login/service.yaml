@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: solicitacao-login-service
+spec:
+  type: NodePort 
+  ports:
+    - port: 5000       # Porta interna no cluster
+      targetPort: 5000 # Porta no container
+      nodePort: 30403   # Porta exposta no host
+  selector:
+    app: solicitacao-login
+
+
+# kubectl apply -f k8s/controle-reservas/consulta-todas-reservas/deployment.yaml
+# kubectl apply -f k8s/controle-reservas/consulta-todas-reservas/service.yaml
+
+# kubectl apply -f k8s/controle-reservas/consulta-user-reservas/deployment.yaml
+# kubectl apply -f k8s/controle-reservas/consulta-user-reservas/service.yaml
+
+# kubectl apply -f k8s/controle-reservas/cancela-reserva/deployment.yaml
+# kubectl apply -f k8s/controle-reservas/cancela-reserva/service.yaml
+
+# kubectl apply -f k8s/controle-reservas/criar-reserva/deployment.yaml
+# kubectl apply -f k8s/controle-reservas/criar-reserva/service.yaml
+
+# kubectl apply -f k8s/controle-reservas/operador-base-reservas/deployment.yaml
+# kubectl apply -f k8s/controle-reservas/operador-base-reservas/service.yaml
+
+# kubectl apply -f k8s/controle-usuarios/criar-usuarios/deployment.yaml
+# kubectl apply -f k8s/controle-usuarios/criar-usuarios/service.yaml
+
+# kubectl apply -f k8s/controle-usuarios/operador-base-usuarios/deployment.yaml
+# kubectl apply -f k8s/controle-usuarios/operador-base-usuarios/service.yaml
+
+# kubectl apply -f k8s/controle-usuarios/solicitacao-login/deployment.yaml
+# kubectl apply -f k8s/controle-usuarios/solicitacao-login/service.yaml
+
+# kubectl apply -f k8s/barramento-eventos/deployment.yaml
+# kubectl apply -f k8s/barramento-eventos/service.yaml

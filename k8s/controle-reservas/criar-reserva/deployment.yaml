@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: criar-reserva
+  labels:
+    app: criar-reserva
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: criar-reserva
+  template:
+    metadata:
+      labels:
+        app: criar-reserva
+    spec:
+      containers:
+      - name: criar-reserva
+        image: caiomc03rx/criar-reserva:latest
+        ports:
+        - containerPort: 7000
+        env:
+        - name: NODE_ENV
+          value: "production"
