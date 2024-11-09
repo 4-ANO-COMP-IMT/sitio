@@ -6,14 +6,13 @@ class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _loginController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  
+
   bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
 
@@ -23,18 +22,8 @@ class _LoginScreenState extends State<LoginScreen> {
         _isLoading = true;
       });
 
+      // Chama a função de verificação de login e aguarda a resposta
       _checkLogin(context);
-
-      // Simulação de um processo de login com delay
-      Future.delayed(const Duration(seconds: 1), () {
-        setState(() {
-          _isLoading = false;
-        });
-
-        // Navegar para a próxima tela
-        // ignore: use_build_context_synchronously
-        Navigator.pushNamed(context, '/');
-      });
     }
   }
 
@@ -52,60 +41,49 @@ class _LoginScreenState extends State<LoginScreen> {
     return null;
   }
 
-  Future<void> _checkLogin(BuildContext context) async {
-    final String email = _loginController.text;
-    final String password = _passwordController.text;
+Future<void> _checkLogin(BuildContext context) async {
+  final String email = _loginController.text;
+  final String password = _passwordController.text;
+  final url = Uri.parse('http://localhost:5000/SolicitacaoLogin');
 
-    final url = Uri.parse('http://localhost:5000/SolicitacaoLogin'); // Endpoint do backend
+  try {
+    final response = await http.put(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': email, 'senha': password}),
+    );
 
-    try {
-      final response = await http.put(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': email,
-          'senha': password,
-        }),
-      );
+    setState(() {
+      _isLoading = false;
+    });
 
-      if (response.statusCode == 201) {
-        // Usuário criado com sucesso, navega para a HomeScreen
-        Navigator.pushNamed(context, '/');
-      } else {
-        // Exibe uma mensagem de erro se a criação falhar
-        print('Erro ao criar o usuário: ${response.body}');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao criar conta')),
-        );
-      }
-    } catch (e) {
-      print('Erro na requisição: $e');
+    if (response.statusCode == 200) {
+      Navigator.pushNamed(context, '/');
+    } else {
+      final errorMsg = jsonDecode(response.body)['mensagem'];
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro de conexão com o servidor')),
+        SnackBar(content: Text(errorMsg)),
       );
     }
+  } catch (e) {
+    setState(() {
+      _isLoading = false;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Erro de conexão com o servidor')),
+    );
   }
-
-            //   ElevatedButton(
-            //   onPressed: () {
-            //     // Lógica de login (simulada)
-            //     print('Login: ${_emailController.text}');
-            //     print('Senha: ${_passwordController.text}');
-            //     Navigator.pushNamed(context, '/');
-            //     _checkLogin(context); // Chama a função para enviar os dados
-            //   },
-            //   child: Text('Login'),
-            // ),
-
+}
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEBFFFF), // Cor de fundo da página
+      backgroundColor: const Color(0xFFEBFFFF),
       body: Center(
         child: Container(
-          width: 700, // Largura máxima do container
+          width: 700,
           padding: const EdgeInsets.all(16.0),
           child: Form(
             key: _formKey,

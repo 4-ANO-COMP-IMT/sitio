@@ -15,7 +15,7 @@ function carregarBaseReservas() {
     try {
         const data = fs.readFileSync(filePath, 'utf8');
         baseConsulta = JSON.parse(data);
-        console.log('Base de reservas carregada com sucesso.');
+        console.log('Base de reservas carregada com sucesso.', baseConsulta);
     } catch (error) {
         console.error('Erro ao carregar a base de reservas:', error.message);
     }
@@ -37,6 +37,7 @@ const funcoes = {
         baseConsulta[Object.keys(baseConsulta).length] = dadosReserva;
         atualizarBaseReservas();
     },
+    ConsultaReservas: () => baseConsulta // Retorna todas as reservas
 
     // SolicitacaoLogin: (dataUsuario) => {
     //     const { email, senha } = dataUsuario;
@@ -69,7 +70,7 @@ app.post("/eventos", (req, res) => {
 
     if (funcoes[tipo]) {
         const resultado = funcoes[tipo](dados); // Executa a função correspondente ao tipo de evento
-        res.status(200).send(resultado || { mensagem: "Evento processado com sucesso" });
+        res.status(200).send(resultado);
     } else {
         res.status(400).send({ erro: "Tipo de evento não suportado" });
     }

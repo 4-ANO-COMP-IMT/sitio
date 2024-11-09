@@ -2,6 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
+const axios = require('axios');
 
 const app = express();
 app.use(express.json());
@@ -38,22 +39,20 @@ const funcoes = {
         atualizarBaseUsuarios();
     },
 
-    SolicitacaoLogin: (dataUsuario) => {
-        const { email, senha } = dataUsuario;
-        console.log(`Original: ${email}, ${senha}`);
-        const usuario = Object.values(baseConsulta).find((u) => {
-            // Log para verificar cada usuário na base
-            console.log(`Comparando com: ${u.email}, ${u.senha}`);
-            return u.email === email && u.senha === senha;
-        });
+    SolicitacaoLogin: async (dataUsuario) => {
+        const { email, senha, contador } = dataUsuario;
+        const usuario = Object.values(baseConsulta).find((u) => u.email === email && u.senha === senha);
 
-        if (usuario) {
-            console.log("Login bem-sucedido:", usuario);
-            return { status: "sucesso", mensagem: "Login bem-sucedido", usuario: usuario };
-        } else {
-            console.log("Falha no login: usuário não encontrado.");
-            return { status: "falha", mensagem: "Email ou senha incorretos" };
-        }
+        const resultadoEvento = {
+            tipo: "ResultadoLogin",
+            dados: {
+                contador,
+                status: usuario ? "sucesso" : "falha",
+                mensagem: usuario ? "Login bem-sucedido" : "Email ou senha incorretos"
+            }
+        };
+
+        await axios.post('http://localhost:10000/eventos', resultadoEvento);
     },
 };
 
@@ -68,8 +67,8 @@ app.post("/eventos", (req, res) => {
     const dados = req.body.dados;
 
     if (funcoes[tipo]) {
-        const resultado = funcoes[tipo](dados); // Executa a função correspondente ao tipo de evento
-        res.status(200).send(resultado || { mensagem: "Evento processado com sucesso" });
+        funcoes[tipo](dados);
+        res.status(200).send({ msg: "Evento processado com sucesso" });
     } else {
         res.status(400).send({ erro: "Tipo de evento não suportado" });
     }

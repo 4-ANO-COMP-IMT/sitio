@@ -1,14 +1,16 @@
+// loginService.js
 const express = require('express');
 const axios = require('axios');
 const bodyParser = require('body-parser');
-const app = express();
 const cors = require('cors');
+const app = express();
 
 app.use(bodyParser.json());
 app.use(cors());
 contador = 0;
 
 let baseLocal = {};
+let respostaLogin = {}; // Armazena a resposta para cada solicitação de login
 
 // Endpoint para Solicitação de Login
 app.put("/SolicitacaoLogin", async (req, res) => {
@@ -16,37 +18,42 @@ app.put("/SolicitacaoLogin", async (req, res) => {
     const { email, senha } = req.body;
 
     // Salva os dados da solicitação localmente
-    baseLocal[contador] = {
-        email,
-        senha
-    };
+    baseLocal[contador] = { email, senha };
 
-    // Evento de Solicitação de Login para o barramento de eventos
+    // Cria um evento para solicitação de login
     const evento = {
         tipo: "SolicitacaoLogin",
-        dados: {
-            email: email,
-            senha: senha
-        }
+        dados: { email, senha, contador }
     };
 
     try {
-        // Envia o evento para o barramento (caso o barramento esteja ativo)
         await axios.post('http://localhost:10000/eventos', evento);
-        console.log(`Solicitação de Login enviada com sucesso para o barramento. Usuário: ${email}`);
-        res.status(201).send({ msg: "Solicitação de Login enviada.", usuario: baseLocal[contador] });
+        console.log(`Solicitação de Login enviada para o barramento. Usuário: ${email}`);
+
+        // Escuta para a resposta do microserviço de base de dados
+        respostaLogin[contador] = res;
     } catch (error) {
         console.error("Erro ao enviar Solicitação de Login para o barramento:", error.message);
-        res.status(500).send({ msg: "Erro ao enviar Solicitação de Login para o barramento" });
+        res.status(500).send({ msg: "Erro ao enviar Solicitação de Login" });
     }
 });
 
-// Endpoint para receber eventos (se necessário)
+// Recebe a resposta do microserviço de base de dados
 app.post("/eventos", (req, res) => {
-    console.log("Evento recebido:", req.body);
+    const { tipo, dados } = req.body;
+
+    if (tipo === "ResultadoLogin") {
+        const { contador, status, mensagem } = dados;
+
+        if (respostaLogin[contador]) {
+            respostaLogin[contador].status(status === "sucesso" ? 200 : 401).send({ mensagem });
+            delete respostaLogin[contador]; // Remove a referência após enviar a resposta
+        }
+    }
+
     res.status(200).send({ msg: "Evento processado com sucesso" });
 });
 
 app.listen(5000, () => {
-    console.log('Microserviço de criação de usuários rodando na porta 5000.');
+    console.log('Microserviço de login rodando na porta 5000.');
 });
