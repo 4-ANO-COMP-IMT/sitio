@@ -86,20 +86,20 @@ class _CalendarScreenState extends State<CalendarScreen> {
     }
   }
 
-  Future<void> carregarReservas() async {
-    setState(() {
-      isLoading = true; // Inicia o estado de carregamento
-    });
+    Future<void> carregarReservas() async {
+    print("Iniciando carregarReservas"); // Confirma se o método está sendo chamado
 
     final url = Uri.parse('http://localhost:7002/consultaTodasReservas');
 
     try {
       final response = await http.get(url);
-      print(response);
+      print("Status da resposta: ${response.statusCode}"); // Verifica o status da resposta
+      print("Corpo da resposta: ${response.body}"); // Verifica o corpo da resposta
+
       if (response.statusCode == 200) {
         final reservas = jsonDecode(response.body) as Map<String, dynamic>;
-        print("Reservas carregadas: $reservas");
-
+        print("Reservas recebidas do backend: $reservas"); // Print para depuração
+        
         setState(() {
           horariosOcupados = reservas.values
               .where((reserva) =>
@@ -108,17 +108,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
               .map<String>((reserva) => reserva['horario'])
               .toList();
         });
+        
+        print("Horários ocupados para o dia selecionado ($_selectedDay): $horariosOcupados"); // Print para verificar os horários ocupados para a data selecionada
       } else {
-        print("Erro ao carregar reservas: ${response.statusCode}");
+        print("Erro ao carregar reservas: Status ${response.statusCode}"); // Imprime o status de erro se não for 200
       }
     } catch (e) {
-      print("Erro ao carregar reservas: $e");
-    } finally {
-      setState(() {
-        isLoading = false; // Finaliza o estado de carregamento
-      });
+      print("Erro ao carregar reservas: $e"); // Print de erro para exceções
     }
   }
+
 
 
 
@@ -165,9 +164,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                     _selectedDay = selectedDay;
                                     _focusedDay = focusedDay;
                                   });
+                                  print("Data selecionada: $_selectedDay"); // Print para depuração da data selecionada
                                   carregarReservas(); // Carrega as reservas ao selecionar um novo dia
                                 }
                               },
+
                               calendarStyle: CalendarStyle(
                                 selectedDecoration: const BoxDecoration(
                                   color: Color(0xFF033F58),

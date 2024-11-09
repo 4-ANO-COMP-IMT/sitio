@@ -48,7 +48,7 @@ app.post('/eventos', async (req, res) => {
                 console.log("Tipo de evento desconhecido:", evento.tipo);
         }
 
-        res.status(200).send({ msg: "wahtsapp" });
+        res.status(200).send({ msg: "Evento processado com sucesso" });
     } catch (error) {
         console.error("Erro ao processar evento:", error);
         res.status(500).send({ msg: "Erro ao processar evento" });

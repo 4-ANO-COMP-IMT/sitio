@@ -70,11 +70,18 @@ app.post("/eventos", (req, res) => {
 
     if (funcoes[tipo]) {
         const resultado = funcoes[tipo](dados); // Executa a função correspondente ao tipo de evento
-        res.status(200).send(resultado);
+        
+        // Se o tipo for ConsultaReservas, retorna diretamente baseConsulta
+        if (tipo === "ConsultaReservas") {
+            res.status(200).send(resultado); // Retorna o JSON com todas as reservas
+        } else {
+            res.status(200).send({ mensagem: "Evento processado com sucesso" });
+        }
     } else {
         res.status(400).send({ erro: "Tipo de evento não suportado" });
     }
 });
+
 
 // Carrega os usuários do arquivo JSON ao iniciar o servidor
 carregarBaseReservas();
