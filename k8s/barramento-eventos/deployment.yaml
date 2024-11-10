@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: barramento-eventos
+  labels:
+    app: barramento-eventos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: barramento-eventos
+  template:
+    metadata:
+      labels:
+        app: barramento-eventos
+    spec:
+      containers:
+      - name: barramento-eventos
+        image: caiomc03rx/barramento-eventos:latest
+        ports:
+        - containerPort: 10000
+        env:
+        - name: NODE_ENV
+          value: "production"

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: barramento-eventos-service
+spec:
+  type: NodePort # Ou LoadBalancer se estiver usando um provedor de nuvem como AWS, Azure, GCP
+  ports:
+    - port: 10000       # Porta interna no cluster
+      targetPort: 10000 # Porta no container
+      nodePort: 30000   # Porta exposta no host (se usar NodePort)
+  selector:
+    app: barramento-eventos

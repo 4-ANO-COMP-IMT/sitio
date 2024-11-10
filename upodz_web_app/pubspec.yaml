@@ -1,0 +1,27 @@
+name: upodz_web_app
+description: "A new Flutter project."
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+  table_calendar: ^3.0.0  # Calendar widget dependency
+  cupertino_icons: ^1.0.8  # Use with CupertinoIcons class for iOS style icons
+  http: ^0.13.5
+  shared_preferences: ^2.0.15
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/

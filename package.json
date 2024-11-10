@@ -1,0 +1,12 @@
+{
+  "name": "sitio",
+  "version": "1.0.0",
+  "description": "| Alunos  | RA |\r | ------------- | ------------- |\r | André Lucas Gois Soares | 21.01922-3  |\r | Bruno Bosa Lopes | 20.00041-3 |\r | Caio Montes Correia | 21.00931-7 |\r | Enzo de Brito Suannes Pucci | 21.02093-0 |\r | Gabriel Marchese Caselli | 20.01408-2 |\r | Pedro Guerra Judice Mesquita | 21.02028-0 |",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

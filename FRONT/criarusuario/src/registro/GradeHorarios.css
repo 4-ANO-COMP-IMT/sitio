@@ -1,0 +1,68 @@
+.grade-container {
+  background-color: #f0fcfc;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 100%; /* Largura completa */
+  max-width: 1100px; /* Mais largo que o container de reserva */
+  height: auto; /* Ajustável à altura do conteúdo */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.grade-title {
+  text-align: center; /* Centraliza o texto do título */
+  font-size: 24px; /* Tamanho do texto do título */
+  font-weight: bold; /* Deixa o título em negrito */
+  margin-bottom: 20px; /* Espaço abaixo do título */
+}
+
+.grade-horarios {
+  flex: 1;
+  overflow-y: auto; /* Permite rolagem vertical */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Aumentar para 3 colunas na grade */
+  gap: 10px;
+  padding: 10px 0;
+  max-height: 500px; /* Aumenta a altura máxima */
+  width: 600px;
+}
+
+.horario-cell {
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px; /* Aumenta o tamanho da fonte */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.horario-cell.disponivel {
+  background-color: #a6e3a6; 
+}
+
+.horario-cell.reservado {
+  background-color: #b0b0b0;
+  color: white;
+}
+
+@media (max-width: 1200px) {
+  .grade-container {
+    max-width: 100%; 
+  }
+
+  .grade-horarios {
+    grid-template-columns: repeat(2, 1fr); 
+    max-height: 400px; 
+  }
+}
+
+@media (max-width: 768px) {
+  .grade-container {
+    max-width: 100%; 
+  }
+
+  .grade-horarios {
+    grid-template-columns: repeat(1, 1fr); 
+    max-height: 300px; 
+  }
+}

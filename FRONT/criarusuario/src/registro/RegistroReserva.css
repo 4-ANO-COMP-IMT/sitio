@@ -1,0 +1,134 @@
+.main-container {
+    background-color: #f0fcfc;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%; 
+    max-width: 400px; 
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: auto; 
+  }
+  
+
+.App-header {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 0 50px; 
+}
+
+h1 {
+    font-size: 28px;
+    color: #042434;
+    font-weight: bold;
+    white-space: nowrap; 
+    margin: 0;
+    flex-grow: 1; 
+}
+
+.logo {
+    width: 121px;
+    height: auto;
+    margin-left: 10px; 
+}
+
+.form-group {
+    width: 100%;
+}
+
+.container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.input {
+    width: calc(100% - 40px); 
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
+input[type="datetime-local"] {
+    width: calc(100% - 40px); 
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    appearance: none; 
+}
+
+.button {
+    width: calc(100% - 40px); 
+    padding: 15px;
+    background-color: #042434; 
+    color: #f0fcfc;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.button:hover {
+    background-color: #021a25; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+label {
+    width: 100%; 
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #042434;
+    text-align: left;
+    display: block;
+}
+
+
+@media (max-width: 768px) {
+    .main-container {
+        padding: 30px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .input, input[type="datetime-local"], .button {
+        width: calc(100% - 20px); 
+    }
+
+    label {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    .input, input[type="datetime-local"], .button {
+        width: calc(100% - 10px); 
+    }
+
+    label {
+        width: 100%;
+    }
+}

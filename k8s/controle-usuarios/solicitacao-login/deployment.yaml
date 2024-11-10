@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: solicitacao-login
+  labels:
+    app: solicitacao-login
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: solicitacao-login
+  template:
+    metadata:
+      labels:
+        app: solicitacao-login
+    spec:
+      containers:
+      - name: solicitacao-login
+        image: caiomc03rx/solicitacao-login:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: NODE_ENV
+          value: "production"

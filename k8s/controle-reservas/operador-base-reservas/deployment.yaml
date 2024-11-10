@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: operador-base-reservas
+  labels:
+    app: operador-base-reservas
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: operador-base-reservas
+  template:
+    metadata:
+      labels:
+        app: operador-base-reservas
+    spec:
+      containers:
+      - name: operador-base-reservas
+        image: caiomc03rx/operador-base-reservas:latest
+        ports:
+        - containerPort: 7001
+        env:
+        - name: NODE_ENV
+          value: "production"
